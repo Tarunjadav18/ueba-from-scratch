@@ -13,6 +13,7 @@ import pandas as pd
 
 from ueba.generator import make_demo
 from ueba.evaluate import evaluate
+from ueba.experiments import evaluate_experiments
 from ueba.ingest import load_events, normalize_events
 from ueba.pipeline import run
 from ueba.workspace import WorkspaceManager
@@ -38,6 +39,7 @@ def main() -> None:
     user_scores.to_csv(workspace_path / "scores.csv", index=False)
     device_scores.to_csv(workspace_path / "device_scores.csv", index=False)
     metrics = evaluate(user_scores)
+    metrics["experiments"] = evaluate_experiments(user_scores)
     (output / "evaluation.json").write_text(json.dumps(metrics, indent=2))
     summary = {
         "workspace": args.workspace,

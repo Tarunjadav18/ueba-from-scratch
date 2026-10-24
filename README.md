@@ -13,6 +13,10 @@ A from-scratch learning implementation of the report's User and Entity Behaviour
 - Password-protected analyst console with roles, audit trail, alerts, cases, verdict feedback, suppressions, admin, activity, host, source, log, and performance views.
 - Optional webhook/SMTP notifications and optional endpoint resource/network agent.
 
+The seeded demo represents 48 users across six departments, 60 devices, 60 days, and about 205,000 synthetic events. A local run on this version produced 18 true positives, 1 false positive, and 0 false negatives across the held-out monitoring days (precision 0.9474, recall 1.0000, F1 0.9730 at risk threshold 45). These are results on generated scenarios, not independent benchmark results or a claim that the report's published metrics were reproduced.
+
+`data/reports/demo/evaluation.json` also includes a threshold sweep and signal ablation table. The ablations remove one evidence signal from risk fusion over the same held-out scores; they do not retrain the underlying models.
+
 This is an educational prototype. Use synthetic or authorized, de-identified exports only; do not monitor employees or deploy it as a production security control without a proper privacy, security, and validation review.
 
 ## Run on your Mac
@@ -43,9 +47,18 @@ python -m ueba.replay --workspace live-demo --labels
 
 For endpoint resource and network counters, install the optional agent dependency with `python -m pip install -r requirements-agent.txt`, then run `python -m ueba.agent --help` to see its options.
 
+## Run the checks
+
+Install the development dependencies in the activated virtual environment, then run the automated report-feature checks:
+
+```sh
+python -m pip install -r requirements-dev.txt
+python -m pytest -q
+```
+
 ## Deploy on Render
 
-The repository includes a Dockerfile and `render.yaml` Blueprint. Review the paid compute and persistent disk in [the Render deployment notes](docs/RENDER_DEPLOYMENT.md) before creating a service. Persistent storage is required to retain accounts, cases, models, and workspace data between restarts.
+The repository includes a Dockerfile and a free temporary `render.yaml` Blueprint. Read [the Render deployment notes](docs/RENDER_DEPLOYMENT.md) first: the free service can sleep and its local database and files may be erased on restart. It is for a short synthetic-data demo, not retaining accounts or project data.
 
 ## Learn the flow
 
