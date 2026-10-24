@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+.DS_Store
+.streamlit/secrets.toml
+*.db
+*.joblib
+.DS_Store
+data/inbox/
+data/failed/
+data/workspaces/
+data/reports/
+data/*.csv

@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: ueba-console
+    runtime: docker
+    plan: 1c-2g
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /_stcore/health
+    numInstances: 1
+    disk:
+      name: ueba-data
+      mountPath: /var/data
+      sizeGB: 1
+    envVars:
+      - key: UEBA_DATA_DIR
+        value: /var/data
+      - key: UEBA_BIND_ADDRESS
+        value: 0.0.0.0
