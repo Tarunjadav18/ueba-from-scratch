@@ -70,6 +70,6 @@ Related alerts are grouped as cases. Analysts can add notes, assign work, set a 
 
 **Read:** `ueba/notify.py`, `ueba/agent.py`, `launch.py`, `Dockerfile`, and `docs/RENDER_DEPLOYMENT.md`.
 
-Notifications are optional and configured with environment variables. The endpoint agent gathers limited local counters and queues events for delivery. The Render blueprint stores the app's files on a persistent disk and keeps the ingest API private to the container.
+Notifications are optional and configured with environment variables. The endpoint agent gathers limited local counters and queues events for delivery. The current Render Blueprint uses a free web service with no persistent disk; the dashboard is public and protected by its administrator login, while the ingest API stays bound to loopback inside the container. Free-service sleep, restarts, and deploys can erase the database and saved workspace data.
 
-**Trace:** start locally first. Use synthetic or authorized, de-identified data only. Before any cloud deployment, review the monthly compute and storage cost and the prototype's security/privacy limits.
+**Trace:** start locally first. Use synthetic or authorized, de-identified data only. For the temporary cloud demo, expect to recreate the administrator and data after a reset. Before using a paid service or persistent storage, review its cost and the prototype's security/privacy limits.
