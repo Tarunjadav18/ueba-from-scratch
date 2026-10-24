@@ -67,9 +67,11 @@ def _login_gate() -> dict | None:
     return None
 
 
-@st.cache_data(show_spinner="Generating synthetic organization and analyzing 60 days of behavior…")
+@st.cache_data(show_spinner="Generating the compact synthetic demo and analyzing 45 days of behavior…")
 def _demo_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    return run(normalize_events(make_demo()))
+    # Keep the hosted console within Render's 512 MB free-instance memory cap.
+    # The CLI pipeline still uses make_demo() defaults for the full experiment.
+    return run(normalize_events(make_demo(users=12, days=45)))
 
 
 def _load_workspace(name: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, str]:

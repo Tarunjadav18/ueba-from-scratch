@@ -15,6 +15,8 @@ A from-scratch learning implementation of the report's User and Entity Behaviour
 
 The seeded demo represents 48 users across six departments, 60 devices, 60 days, and about 205,000 synthetic events. At risk threshold 45, a local default run produced 17 true positives, 5 false positives, and 0 false negatives on held-out user-days (precision 0.7727, recall 1.0000, F1 0.8718). The five-seed experiment below evaluates combined user-days and device-days and averaged precision 0.6581, recall 0.7143, F1 0.6850, ROC-AUC 0.9973, and PR-AUC 0.7546. These are results on generated scenarios, not independent benchmark results or a claim that the report's published metrics were reproduced.
 
+The hosted dashboard uses a smaller 12-user/45-day synthetic run so it can fit Render's 512 MB free-instance memory limit. The full 48-user/60-day experiment remains available locally through `python run_pipeline.py`.
+
 `data/reports/demo/evaluation.json` also includes a threshold sweep and signal ablation table. The ablations remove one evidence signal from risk fusion over the same held-out scores; they do not retrain the underlying models.
 
 To regenerate five organizations with different membership, departments, habits, attack victims, and incident timing, run `python run_pipeline.py --robustness`. The per-seed user-day and device-day results are written to `data/reports/demo/robustness.json` and shown on the Model Performance page when that report exists. Each run retrains on a newly generated organization; the five seeds (`42, 7, 123, 2024, 99`) vary organization membership, departments, habits, victims, and incident timing. At threshold 45, the current run averaged F1 0.6850 (range 0.6780–0.6897). Results describe this synthetic data only.
