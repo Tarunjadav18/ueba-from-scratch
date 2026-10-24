@@ -14,6 +14,7 @@ import pandas as pd
 from ueba.generator import make_demo
 from ueba.evaluate import evaluate
 from ueba.experiments import evaluate_experiments
+from ueba.experiments import evaluate_robustness
 from ueba.ingest import load_events, normalize_events
 from ueba.pipeline import run
 from ueba.workspace import WorkspaceManager
@@ -24,6 +25,8 @@ def main() -> None:
     parser.add_argument("--input", help="Optional CSV/JSON/JSONL/ZIP event export")
     parser.add_argument("--workspace", default="demo", help="Workspace name for saving this run")
     parser.add_argument("--output", default="data/reports", help="Folder for score and feature CSV exports")
+    parser.add_argument("--robustness", action="store_true",
+                        help="Also retrain and evaluate the five-seed synthetic robustness experiment")
     args = parser.parse_args()
 
     events = load_events(args.input) if args.input else normalize_events(make_demo())
@@ -40,6 +43,10 @@ def main() -> None:
     device_scores.to_csv(workspace_path / "device_scores.csv", index=False)
     metrics = evaluate(user_scores)
     metrics["experiments"] = evaluate_experiments(user_scores)
+    robustness = None
+    if args.robustness:
+        robustness = evaluate_robustness()
+        (output / "robustness.json").write_text(json.dumps(robustness, indent=2))
     (output / "evaluation.json").write_text(json.dumps(metrics, indent=2))
     summary = {
         "workspace": args.workspace,
@@ -52,6 +59,8 @@ def main() -> None:
         "evaluation": metrics,
         "output": str(output.resolve()),
     }
+    if robustness is not None:
+        summary["robustness"] = robustness["summary"]
     print(pd.Series(summary).to_string())
     print(f"\nTop alerts: {output / 'user_day_scores.csv'}")
 

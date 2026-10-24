@@ -17,6 +17,8 @@ The seeded demo represents 48 users across six departments, 60 devices, 60 days,
 
 `data/reports/demo/evaluation.json` also includes a threshold sweep and signal ablation table. The ablations remove one evidence signal from risk fusion over the same held-out scores; they do not retrain the underlying models.
 
+To retrain and compare the full pipeline on the report's five synthetic seeds (`42, 7, 123, 2024, 99`), run `python run_pipeline.py --robustness`. This takes longer than the default batch run and writes per-seed results to `data/reports/demo/robustness.json`; the Model Performance page displays the table when that file is present. It evaluates combined user-days and device-days. The same attack schedule is retained while the random telemetry varies, so this checks sensitivity to generated behavior rather than generalization to different attack placements.
+
 This is an educational prototype. Use synthetic or authorized, de-identified exports only; do not monitor employees or deploy it as a production security control without a proper privacy, security, and validation review.
 
 ## Run on your Mac

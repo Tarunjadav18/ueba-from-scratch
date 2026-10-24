@@ -44,9 +44,9 @@ Rules are readable conditions mapped to ATT&CK references. Risk fusion combines 
 
 ## 6. Evaluate carefully
 
-**Read:** `ueba/evaluate.py` and use the Model Performance page.
+**Read:** `ueba/evaluate.py`, `ueba/experiments.py`, and use the Model Performance page.
 
-Precision, recall, F1, ROC-AUC, and PR-AUC depend on ground-truth labels. The performance page and `data/reports/demo/evaluation.json` include a threshold sweep and detector-signal ablations. An ablation removes a signal from risk fusion over the same scored days; it does not retrain the model. The synthetic generator includes planted attacks, so metrics describe this generated sample and do not establish real-world accuracy.
+Precision, recall, F1, ROC-AUC, and PR-AUC depend on ground-truth labels. The performance page and `data/reports/demo/evaluation.json` include a threshold sweep and detector-signal ablations. An ablation removes a signal from risk fusion over the same scored days; it does not retrain the model. Run `python run_pipeline.py --robustness` to retrain on five synthetic seeds and save per-seed combined user-day/device-day results to `data/reports/demo/robustness.json`. The attack schedule remains fixed while telemetry varies. The synthetic generator includes planted attacks, so these metrics describe generated samples and do not establish real-world accuracy.
 
 **Trace:** inspect one false positive and one missed malicious user-day in `data/reports/demo/user_day_scores.csv` after a batch run.
 

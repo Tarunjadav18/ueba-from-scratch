@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pandas as pd
 import streamlit as st
 
@@ -44,3 +47,19 @@ def render(ctx: dict) -> None:
                           "alerts/day": result["alerts_per_day"]})
     st.dataframe(pd.DataFrame(ablations), use_container_width=True, hide_index=True)
     st.caption(experiments["note"])
+
+    report_path = Path(ctx["workspace_root"]).parent / "reports" / ctx["workspace"] / "robustness.json"
+    if report_path.exists():
+        robustness = json.loads(report_path.read_text())
+        st.subheader("Robustness across synthetic seeds")
+        rows = []
+        for result in robustness.get("runs", []):
+            values = result.get("evaluation", {})
+            rows.append({"seed": result.get("seed"), "precision": values.get("precision"),
+                         "recall": values.get("recall"), "F1": values.get("f1"),
+                         "PR-AUC": values.get("pr_auc"), "false-positive rate": values.get("false_positive_rate"),
+                         "alerts/day": values.get("alerts_per_day")})
+        st.dataframe(pd.DataFrame(rows), use_container_width=True, hide_index=True)
+        st.caption(robustness.get("scope", "Synthetic seed results."))
+    else:
+        st.info("To add the five-seed robustness table here, run `python run_pipeline.py --robustness` locally for this workspace.")
