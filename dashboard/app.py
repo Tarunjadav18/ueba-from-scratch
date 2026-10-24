@@ -17,9 +17,6 @@ DB_PATH = DATA_ROOT / "console.db"
 from ueba.auth import authenticate, create_user, has_users, require_role
 from ueba.cases import sync_cases
 from ueba.evaluate import evaluate
-from ueba.generator import make_demo
-from ueba.ingest import normalize_events
-from ueba.pipeline import run
 from ueba.workspace import WorkspaceManager
 from dashboard.views import activity, admin, alerts, cases, host, investigate, logs, overview, performance, sources
 
@@ -67,11 +64,14 @@ def _login_gate() -> dict | None:
     return None
 
 
-@st.cache_data(show_spinner="Generating the compact synthetic demo and analyzing 45 days of behavior…")
+@st.cache_data(show_spinner="Loading the compact synthetic demo…")
 def _demo_data() -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
-    # Keep the hosted console within Render's 512 MB free-instance memory cap.
-    # The CLI pipeline still uses make_demo() defaults for the full experiment.
-    return run(normalize_events(make_demo(users=12, days=45)))
+    demo_root = Path(__file__).resolve().parent / "demo_data"
+    events = pd.read_csv(demo_root / "events.csv.gz", keep_default_na=False)
+    events["timestamp"] = pd.to_datetime(events["timestamp"], utc=True, errors="coerce")
+    scores = pd.read_csv(demo_root / "user_scores.csv.gz", keep_default_na=False)
+    devices = pd.read_csv(demo_root / "device_scores.csv.gz", keep_default_na=False)
+    return events, scores, devices
 
 
 def _load_workspace(name: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, str]:

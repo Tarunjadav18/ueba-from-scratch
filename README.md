@@ -15,7 +15,7 @@ A from-scratch learning implementation of the report's User and Entity Behaviour
 
 The seeded demo represents 48 users across six departments, 60 devices, 60 days, and about 205,000 synthetic events. At risk threshold 45, a local default run produced 17 true positives, 5 false positives, and 0 false negatives on held-out user-days (precision 0.7727, recall 1.0000, F1 0.8718). The five-seed experiment below evaluates combined user-days and device-days and averaged precision 0.6581, recall 0.7143, F1 0.6850, ROC-AUC 0.9973, and PR-AUC 0.7546. These are results on generated scenarios, not independent benchmark results or a claim that the report's published metrics were reproduced.
 
-The hosted dashboard uses a smaller 12-user/45-day synthetic run so it can fit Render's 512 MB free-instance memory limit. The full 48-user/60-day experiment remains available locally through `python run_pipeline.py`.
+The hosted dashboard loads a pre-scored, compact 12-user/45-day synthetic snapshot so it does not need to run model training on a low-memory hosting instance. Regenerate that snapshot with `python scripts/build_dashboard_demo.py`. The full 48-user/60-day experiment remains available locally through `python run_pipeline.py`.
 
 `data/reports/demo/evaluation.json` also includes a threshold sweep and signal ablation table. The ablations remove one evidence signal from risk fusion over the same held-out scores; they do not retrain the underlying models.
 
