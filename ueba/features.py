@@ -221,7 +221,7 @@ def _daily_device_features(events: pd.DataFrame) -> pd.DataFrame:
             "device_distinct_ports": int(network.loc[network["port"] > 0, "port"].nunique()),
             "device_off_hours_events": int(((hours < 6) | (hours >= 22)).sum()),
             "device_usb_events": int(g["event_type"].eq("usb").sum()),
-            "label": int(g["label"].max()),
+            "label": int(g["device_label"].max()),
             "has_ground_truth": bool(g["has_ground_truth"].any()),
         })
         seen_domains.setdefault(str(device), set()).update(current_domains)

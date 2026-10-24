@@ -15,13 +15,13 @@ STRING_FIELDS = (
 )
 NUMERIC_FIELDS = (
     "count", "bytes_out", "bytes_in", "resource_pct", "memory_pct", "disk_pct", "port",
-    "pages", "event_id", "label", "duration_seconds",
+    "pages", "event_id", "label", "device_label", "duration_seconds",
 )
 DEFAULTS = {
     "user": "unknown-user", "device": "unknown-device", "event_type": "",
     "department": "Unknown", "result": "unknown", "count": 1, "bytes_out": 0.0,
     "bytes_in": 0.0, "resource_pct": 0.0, "memory_pct": 0.0, "disk_pct": 0.0,
-    "port": 0, "pages": 0, "lat": None, "lon": None, "label": 0,
+    "port": 0, "pages": 0, "lat": None, "lon": None, "label": 0, "device_label": 0,
     "duration_seconds": 900.0, "target_user": "",
     "source_ip": "", "country": "", "city": "", "host": "", "domain": "", "scenario": "",
     "url": "", "category": "", "file_name": "", "share_name": "", "usb_device": "",
@@ -115,7 +115,7 @@ def normalize_events(frame: pd.DataFrame) -> pd.DataFrame:
                  "source_ip", "country", "city", "host", "domain", "url", "category", "event_id",
                  "command", "target_user", "file_name", "share_name", "usb_device", "scenario", "bytes_out",
                  "bytes_in", "resource_pct", "memory_pct", "disk_pct", "port", "pages", "lat", "lon",
-                 "label", "duration_seconds", "blocked", "is_sensitive", "is_admin", "executable",
+                 "label", "device_label", "duration_seconds", "blocked", "is_sensitive", "is_admin", "executable",
                  "has_ground_truth"]
     return data[canonical].sort_values("timestamp").reset_index(drop=True)
 

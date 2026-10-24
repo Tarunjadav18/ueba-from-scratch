@@ -60,9 +60,9 @@ def evaluate_robustness(seeds: tuple[int, ...] = ROBUSTNESS_SEEDS,
                         learning_days: int | None = None) -> dict:
     """Retrain the full pipeline for each synthetic seed and summarize held-out results.
 
-    Each run scores both user-days and device-days. The seed changes the generated
-    telemetry; the default planted scenario schedule is held constant so this
-    isolates sensitivity to normal-behavior variation rather than moving attacks.
+    Each run regenerates the synthetic organization, including membership,
+    department/habit assignments, attack victims, and incident timing. It then
+    retrains and scores both user-days and device-days for that organization.
     """
     from .generator import make_demo
     from .pipeline import run
@@ -114,7 +114,7 @@ def evaluate_robustness(seeds: tuple[int, ...] = ROBUSTNESS_SEEDS,
         "status": "ok" if runs and all(run["evaluation"].get("status") == "ok" for run in runs) else "incomplete",
         "threshold": float(threshold),
         "seeds": [int(seed) for seed in seeds],
-        "scope": "Combined held-out user-days and device-days. Each seed retrains the pipeline; the attack schedule is fixed while generated normal telemetry varies.",
+        "scope": "Combined held-out user-days and device-days. Each seed regenerates organization membership, departments, habits, attack victims, and timing before retraining the pipeline.",
         "summary": summary,
         "runs": runs,
     }
