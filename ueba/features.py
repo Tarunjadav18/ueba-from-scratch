@@ -144,6 +144,9 @@ def _daily_user_features(events: pd.DataFrame) -> pd.DataFrame:
         print_median = float(np.median(previous_print_pages)) if previous_print_pages else 0.0
         volume_ratio = print_pages / max(print_median, 1.0)
         usb_first_use = int(len(usb) > 0 and not (previous["event_type"] == "usb").any())
+        admin_targets = admin.get("target_user", pd.Series("", index=admin.index)).astype(str).str.lower()
+        admin_users = admin["user"].astype(str).str.lower()
+        admin_as_other = sum(target != user_name for target, user_name in zip(admin_targets, admin_users))
         rows.append({
             "user": user, "date": day, "department": department,
             "scenario": next((str(s) for s in g["scenario"] if str(s)), ""),
@@ -163,7 +166,7 @@ def _daily_user_features(events: pd.DataFrame) -> pd.DataFrame:
             "usb_files_copied": int(_values(usb["file_name"]).count()),
             "usb_bytes_mb": float(usb["bytes_out"].sum() / 1024**2),
             "admin_events": len(admin), "admin_first_use": int(len(admin) > 0 and len(previous[previous["event_type"].eq("admin")]) == 0),
-            "admin_as_other": int((admin.get("target_user", pd.Series("", index=admin.index)).astype(str).str.lower() != admin["user"].astype(str).str.lower()).sum()),
+            "admin_as_other": admin_as_other,
             "shared_folder_events": len(shares), "new_shared_folders": len(set(_values(shares["share_name"])) - set(_values(previous["share_name"]))),
             "admin_share_events": int(shares["share_name"].str.endswith(("C$", "ADMIN$"), na=False).sum()),
             "print_jobs": len(printing), "print_pages": print_pages, "print_volume_ratio": volume_ratio,
