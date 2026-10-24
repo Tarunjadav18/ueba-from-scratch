@@ -1,6 +1,6 @@
 # UEBA Lab
 
-A from-scratch learning implementation of the report's User and Entity Behaviour Analytics project. It includes batch and incremental scoring, synthetic data, analyst workflows, and a local console. The implementation is being built as a teachable recreation; it is not Amaan's original source code and does not reproduce the report's results by assertion.
+A from-scratch learning implementation of the report's User and Entity Behaviour Analytics project. It includes batch and incremental scoring, synthetic data, analyst workflows, and a local console. The implementation is being built as a teachable recreation;
 
 ## What is implemented
 
