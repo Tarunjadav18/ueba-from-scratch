@@ -121,7 +121,14 @@ def _daily_user_features(events: pd.DataFrame) -> pd.DataFrame:
         new_domains = set(current_domain_values) - old_domains
         new_countries = set(_values(auth["country"])) - old_countries
         current_subs = {".".join(x.split(".")[:-2]) for x in current_domain_values if len(x.split(".")) > 2}
-        command_text = ps["command"].str.lower()
+        command_text = ps["command"].fillna("").astype(str).str.lower()
+        # Python's sum has an integer zero identity for an empty iterator. A
+        # pandas string Series can instead reduce an empty mapped Series to
+        # "" on newer pandas releases, which makes int(series.sum()) fail.
+        suspicious_powershell = sum(
+            any(term in command for term in _SUSPICIOUS_COMMANDS)
+            for command in command_text
+        )
         urls_files = (web["url"].str.lower() + " " + web["file_name"].str.lower())
         executable = urls_files.map(lambda x: any(x.split("?")[0].endswith(ext) for ext in _EXECUTABLE_ENDINGS)) | web["executable"].astype(bool)
         cloud = network["domain"].str.lower().map(lambda d: any(d == c or d.endswith("." + c) for c in _CLOUD_DOMAINS))
@@ -162,7 +169,7 @@ def _daily_user_features(events: pd.DataFrame) -> pd.DataFrame:
             "print_jobs": len(printing), "print_pages": print_pages, "print_volume_ratio": volume_ratio,
             "confidential_print_pages": int(printing.loc[printing["is_sensitive"], "pages"].sum()),
             "off_hours_print_jobs": int((printing["timestamp"].dt.hour.map(lambda h: h < 6 or h >= 22)).sum()),
-            "powershell_events": len(ps), "suspicious_powershell": int(command_text.map(lambda s: any(term in s for term in _SUSPICIOUS_COMMANDS)).sum()),
+            "powershell_events": len(ps), "suspicious_powershell": suspicious_powershell,
             "network_connections": len(network), "new_domains": len(new_domains), "new_subdomains": len(current_subs - old_subdomains),
             "bytes_out_mb": float(network["bytes_out"].sum() / 1024**2), "bytes_in_mb": float(network["bytes_in"].sum() / 1024**2),
             "cloud_upload_mb": float(network.loc[cloud, "bytes_out"].sum() / 1024**2),
